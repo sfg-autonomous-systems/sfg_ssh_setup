@@ -9,12 +9,16 @@ from logging.handlers import SysLogHandler
 from pathlib import Path
 
 syslog_handler = SysLogHandler(address="/dev/log", facility=SysLogHandler.LOG_AUTH)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format=f"{__file__}: %(levelname)s: %(message)s",
-    handlers=[logging.StreamHandler(sys.stderr), syslog_handler],
+syslog_formatter = logging.Formatter(
+    f"{Path(__file__).name}[%(process)d]: %(levelname)s: %(message)s"
 )
+syslog_handler.setFormatter(syslog_formatter)
+
+stderr_handler = logging.StreamHandler(sys.stderr)
+stderr_formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+stderr_handler.setFormatter(stderr_formatter)
+
+logging.basicConfig(level=logging.INFO, handlers=[syslog_handler, stderr_handler])
 
 
 def fetch_json_content(username: str) -> str | None:
