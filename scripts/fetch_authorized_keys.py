@@ -5,24 +5,27 @@ import re
 import socket
 import sys
 import urllib.request
+from logging.handlers import SysLogHandler
 from pathlib import Path
 
+syslog_handler = SysLogHandler(address="/dev/log", facility=SysLogHandler.LOG_AUTH)
+
 logging.basicConfig(
-    stream=sys.stderr,
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
+    format=f"{__file__}: %(levelname)s: %(message)s",
+    handlers=[logging.StreamHandler(sys.stderr), syslog_handler],
 )
 
 
 def fetch_json_content(username: str) -> str | None:
-    url = f"https://raw.githubusercontent.com/sfg-autonomous-systems/ssh-setup/main/keys/{username}/authorized_keys.json"
+    url = f"https://raw.githubusercontent.com/sfg-autonomous-systems/sfg_ssh_setup/main/keys/{username}/authorized_keys.json"
 
     try:
         with urllib.request.urlopen(url, timeout=10) as response:
             return response.read().decode("utf-8")
     except Exception as error:
         logging.error(
-            f"Failed to fetch authorized keys JSON for user '{username}': {error}"
+            f"Failed to fetch authorized keys JSON for user '{username}' using {url}: {error}"
         )
         return None
 
