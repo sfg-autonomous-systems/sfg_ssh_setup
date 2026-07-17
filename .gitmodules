@@ -1,0 +1,3 @@
+[submodule "scripts/bash_utils"]
+	path = scripts/bash_utils
+	url = ../bash-utils.git

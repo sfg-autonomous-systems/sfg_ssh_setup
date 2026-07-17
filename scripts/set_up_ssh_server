@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+sfg_ssh_setup__set_up_ssh_server() {
+    local target_dir="${1}"
+
+    local SCRIPT_DIR
+    SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>"/dev/null" && pwd)"
+    source "${SCRIPT_DIR}/bash_utils/print_utils"
+
+    local START_TEXT="> Setting up SSH server."
+    local END_TEXT="< Done setting up SSH server."
+
+    sfg_bash_utils__print_info "${START_TEXT}"
+
+    local target_conf_dir="${target_dir}/config"
+    local target_conf_filepath="${target_conf_dir}/ssh_server.conf"
+    local target_keys_dir="${target_dir}/keys"
+    local target_scripts_dir="${target_dir}/scripts"
+
+    local authorized_keys_command_filepath="${target_scripts_dir}/fetch_authorized_keys.py"
+    local authorized_keys_command_run_as="nobody"
+
+    mkdir -p "${target_conf_dir}" "${target_keys_dir}" "${target_scripts_dir}"
+    chown -R ${authorized_keys_command_run_as} "${target_keys_dir}"
+    cp "${SCRIPT_DIR}/../scripts/fetch_authorized_keys.py" "${authorized_keys_command_filepath}"
+
+    # shellcheck disable=SC2016
+    AUTHORIZED_KEYS_COMMAND_FILEPATH="${authorized_keys_command_filepath}" AUTHORIZED_KEYS_COMMAND_RUN_AS="${authorized_keys_command_run_as}" \
+        envsubst '${AUTHORIZED_KEYS_COMMAND_FILEPATH} ${AUTHORIZED_KEYS_COMMAND_RUN_AS}' <"${SCRIPT_DIR}/../config/ssh_server.conf.template" >"${target_conf_filepath}"
+
+    local INCLUDE_DIRECTIVE="Include ${target_conf_filepath}"
+    local SSHD_CONFIG="/etc/ssh/sshd_config"
+
+    touch "${SSHD_CONFIG}"
+    chmod 644 "${SSHD_CONFIG}"
+    
+    # Check if the include directive already exists.
+    if grep -qF -- "${INCLUDE_DIRECTIVE}" "${SSHD_CONFIG}"; then
+        sfg_bash_utils__print_info "${END_TEXT}"
+        return 0
+    fi
+
+    local TMP_FILE
+    TMP_FILE="$(mktemp)"
+
+    echo "${INCLUDE_DIRECTIVE}" >"${TMP_FILE}"
+    echo "" >>"${TMP_FILE}"
+    cat "${SSHD_CONFIG}" >>"${TMP_FILE}"
+    mv "${TMP_FILE}" "${SSHD_CONFIG}"
+    chmod 644 "${SSHD_CONFIG}"
+
+    if systemctl is-active --quiet ssh; then
+        systemctl restart ssh
+    elif systemctl is-active --quiet sshd; then
+        systemctl restart sshd
+    fi
+
+    sfg_bash_utils__print_info "${END_TEXT}"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    set -e
+    source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>"/dev/null" && pwd)/bash_utils/print_utils"
+
+    if [[ -z "${SUDO_USER}" ]]; then
+        sfg_bash_utils__print_error "Invalid invocation: ${*}"
+        sfg_bash_utils__print_error "Usage: sudo $0"
+        sfg_bash_utils__print_error "Example: sudo $0"
+        exit 1
+    fi
+
+    sfg_ssh_setup__set_up_ssh_server "${@}"
+fi

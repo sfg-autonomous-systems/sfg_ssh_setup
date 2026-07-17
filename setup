@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+sfg_ssh_setup__set_up_ssh() {
+    local SCRIPT_DIR
+    SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>"/dev/null" && pwd)"
+    source "${SCRIPT_DIR}/scripts/bash_utils/print_utils"
+    source "${SCRIPT_DIR}/scripts/set_up_ssh_server"
+    source "${SCRIPT_DIR}/scripts/set_up_ssh_client"
+
+    if [[ -z "${SUDO_USER}" ]]; then
+        sfg_bash_utils__print_error "Invalid invocation: ${*}"
+        sfg_bash_utils__print_error "Usage: sudo $0"
+        sfg_bash_utils__print_error "Example: sudo $0"
+        exit 1
+    fi
+
+    local START_TEXT="> Setting up SSH."
+    local END_TEXT="< Done setting up SSH."
+
+    sfg_bash_utils__print_info "${START_TEXT}"
+    local target_dir="/etc/ssh/sfg"
+
+    local MESSAGE="Do you want to set up the SSH server for SFG Autonomous Systems? [Y/n] "
+    read -rp "${MESSAGE}" confirm
+
+    if [[ "${confirm}" =~ ^[Yy]$ ]]; then
+        sfg_ssh_setup__set_up_ssh_server "${target_dir}"
+    fi
+
+    local MESSAGE="Do you want to set up the SSH client for SFG Autonomous Systems? [Y/n] "
+    read -rp "${MESSAGE}" confirm
+
+    if [[ "${confirm}" =~ ^[Yy]$ ]]; then
+        sfg_ssh_setup__set_up_ssh_client "${target_dir}"
+    fi
+    
+    sfg_bash_utils__print_info "${END_TEXT}"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    set -e
+    sfg_ssh_setup__set_up_ssh "${@}"
+fi

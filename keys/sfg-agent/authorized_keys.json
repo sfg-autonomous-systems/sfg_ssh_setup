@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "name": "Tantenfisch",
+      "authorized_for": ".*"
+    },
+    {
+      "name": "JakobHaeringer",
+      "authorized_for": ".*"
+    }
+  ]
+}

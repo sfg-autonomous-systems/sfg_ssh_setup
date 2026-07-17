@@ -1,0 +1,8 @@
+{
+  "users": [
+    {
+      "name": "Apfelkuch",
+      "authorized_for": "sfg-workstation-02"
+    }
+  ]
+}

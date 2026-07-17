@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        // General extensions.
+        "eamodio.gitlens",
+        "GitHub.copilot",
+        "foxundermoon.shell-format",
+        "timonwong.shellcheck",
+        "redhat.vscode-yaml",
+        // Python extensions.
+        "njpwerner.autodocstring",
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker"
+    ]
+}
