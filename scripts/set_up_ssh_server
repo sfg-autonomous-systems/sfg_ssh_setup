@@ -9,10 +9,10 @@ sfg_ssh_setup__set_up_ssh_server() {
     local END_TEXT="< Done setting up SSH server."
 
     sfg_bash_utils__print_info "${START_TEXT}"
-    local conf_filepath="/etc/ssh/sshd_config.d/00-ssh_server.conf"
+    local conf_filepath="/etc/ssh/sshd_config.d/00-sfg_ssh_server.conf"
     local authorized_keys_dir="/var/cache/sfg/authorized_keys"
 
-    local authorized_keys_command_filepath="/usr/local/bin/fetch_authorized_keys.py"
+    local authorized_keys_command_filepath="/usr/local/bin/sfg_fetch_authorized_keys.py"
     local authorized_keys_command_user="nobody"
     
     # Install the sshd config.
