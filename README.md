@@ -23,6 +23,7 @@ The setup script uses standard Linux file hierarchies to securely install the co
 ## How to Get SSH Access
 
 1. Ensure you have generated an SSH key pair on your personal machine and added the **public key** to your GitHub account.
+
     * [Adding a new SSH key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
 2. Contact an admin with your GitHub username and which machines you would like to have access to.
