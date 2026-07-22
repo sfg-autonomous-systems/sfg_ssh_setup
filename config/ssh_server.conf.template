@@ -1,5 +1,5 @@
 AuthorizedKeysFile none
 PasswordAuthentication no
 PubkeyAuthentication yes
-AuthorizedKeysCommand ${AUTHORIZED_KEYS_COMMAND_FILEPATH}
-AuthorizedKeysCommandUser ${AUTHORIZED_KEYS_COMMAND_RUN_AS}
+AuthorizedKeysCommand ${AUTHORIZED_KEYS_COMMAND} %u
+AuthorizedKeysCommandUser ${AUTHORIZED_KEYS_COMMAND_USER}

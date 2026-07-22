@@ -18,22 +18,20 @@ sfg_ssh_setup__set_up_ssh() {
     local END_TEXT="< Done setting up SSH."
 
     sfg_bash_utils__print_info "${START_TEXT}"
-    local target_dir="/etc/ssh/sfg"
-
     local MESSAGE="Do you want to set up the SSH server for SFG Autonomous Systems? [Y/n] "
     read -rp "${MESSAGE}" confirm
 
     if [[ "${confirm}" =~ ^[Yy]$ ]]; then
-        sfg_ssh_setup__set_up_ssh_server "${target_dir}"
+        sfg_ssh_setup__set_up_ssh_server
     fi
 
     local MESSAGE="Do you want to set up the SSH client for SFG Autonomous Systems? [Y/n] "
     read -rp "${MESSAGE}" confirm
 
     if [[ "${confirm}" =~ ^[Yy]$ ]]; then
-        sfg_ssh_setup__set_up_ssh_client "${target_dir}"
+        sfg_ssh_setup__set_up_ssh_client
     fi
-    
+
     sfg_bash_utils__print_info "${END_TEXT}"
 }
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 sfg_ssh_setup__set_up_ssh_client() {
-    local target_dir="${1}"
-
     local SCRIPT_DIR
     SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>"/dev/null" && pwd)"
     source "${SCRIPT_DIR}/bash_utils/print_utils"
@@ -11,35 +9,12 @@ sfg_ssh_setup__set_up_ssh_client() {
     local END_TEXT="< Done setting up SSH client."
 
     sfg_bash_utils__print_info "${START_TEXT}"
+    local conf_filepath="/etc/ssh/ssh_config.d/00-ssh_client.conf"
 
-    local target_conf_dir="${target_dir}/config"
-    local target_conf_filepath="${target_conf_dir}/ssh_client.conf"
-
-    mkdir -p "${target_conf_dir}"
-    cp "${SCRIPT_DIR}/../config/ssh_client.conf" "${target_conf_filepath}"
-    chmod 644 "${target_conf_filepath}"
-
-    local INCLUDE_DIRECTIVE="Include ${target_conf_filepath}"
-    local SSH_CONFIG="/etc/ssh/ssh_config"
-
-    touch "${SSH_CONFIG}"
-    chmod 644 "${SSH_CONFIG}"
-    
-    # Check if the include directive already exists.
-    if grep -qF -- "${INCLUDE_DIRECTIVE}" "${SSH_CONFIG}"; then
-        sfg_bash_utils__print_info "${END_TEXT}"
-        return 0
-    fi
-
-    local TMP_FILE
-    TMP_FILE="$(mktemp)"
-
-    echo "${INCLUDE_DIRECTIVE}" >"${TMP_FILE}"
-    echo "" >>"${TMP_FILE}"
-    cat "${SSH_CONFIG}" >>"${TMP_FILE}"
-    mv "${TMP_FILE}" "${SSH_CONFIG}"
-    chmod 644 "${SSH_CONFIG}"
-
+    # Install the ssh config.
+    mkdir -p "$(dirname "${conf_filepath}")"
+    cp "${SCRIPT_DIR}/../config/ssh_client.conf" "${conf_filepath}"
+    chmod 644 "${conf_filepath}"
     sfg_bash_utils__print_info "${END_TEXT}"
 }
 

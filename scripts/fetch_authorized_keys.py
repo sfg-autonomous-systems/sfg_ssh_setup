@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO, handlers=[syslog_handler, stderr_handler
 
 
 def fetch_json_content(username: str) -> str | None:
-    url = f"https://raw.githubusercontent.com/sfg-autonomous-systems/sfg_ssh_setup/main/keys/{username}/authorized_keys.json"
+    url = f"https://raw.githubusercontent.com/sfg-autonomous-systems/sfg_ssh_setup/main/authorized_keys/{username}/authorized_keys.json"
 
     try:
         with urllib.request.urlopen(url, timeout=10) as response:
@@ -34,8 +34,10 @@ def fetch_json_content(username: str) -> str | None:
         return None
 
 
-def get_authorized_keys(username: str, json_content: str | None) -> list | None:
-    cache_dir = Path(__file__).parent.parent / "keys" / username
+def get_authorized_keys(
+    authorized_keys_dir: Path, username: str, json_content: str | None
+) -> list | None:
+    cache_dir = authorized_keys_dir / username
     json_cache_filepath = cache_dir / "authorized_keys.json"
 
     if json_content is not None:
@@ -82,9 +84,9 @@ def get_authorized_keys(username: str, json_content: str | None) -> list | None:
     return authorized_keys
 
 
-def main(username: str) -> None:
+def main(authorized_keys_dir: Path, username: str) -> None:
     json_content = fetch_json_content(username)
-    authorized_keys = get_authorized_keys(username, json_content)
+    authorized_keys = get_authorized_keys(authorized_keys_dir, username, json_content)
 
     if authorized_keys is not None:
         print("\n".join(authorized_keys))
@@ -93,4 +95,4 @@ def main(username: str) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(Path(sys.argv[1]), sys.argv[2])
