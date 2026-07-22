@@ -16,9 +16,9 @@ sudo ./setup
 
 The setup script uses standard Linux file hierarchies to securely install the components:
 
-* **Configurations:** Placed in `/etc/ssh/ssh_config.d/00-sfg_ssh_client.conf` and `/etc/ssh/sshd_config.d/00-sfg_ssh_server.conf` to natively override default settings.
-* **Execution Script:** Installed to `/usr/local/bin/sfg_fetch_authorized_keys.py`.
-* **Authorized Key Cache:** Stored in `/var/cache/sfg/authorized_keys/`.
+* **Configurations:** Installed to `/etc/ssh/ssh_config.d/00-sfg_ssh_client.conf` and `/etc/ssh/sshd_config.d/00-sfg_ssh_server.conf`.
+* **Authorization Script:** Installed to `/usr/local/bin/sfg_fetch_authorized_keys.py`.
+* **Authorized Keys Cache:** Stored in `/var/cache/sfg/authorized_keys/`.
 
 ## How to Get SSH Access
 
