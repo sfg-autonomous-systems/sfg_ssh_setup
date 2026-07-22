@@ -14,14 +14,17 @@ cd sfg_ssh_setup
 sudo ./setup
 ```
 
-Everything is installed into `/etc/ssh/sfg` and included via `Include` directives in the main SSH config files.
+The setup script uses standard Linux file hierarchies to securely install the components:
+
+* **Configurations:** Placed in `/etc/ssh/ssh_config.d/00-ssh_client.conf` and `/etc/ssh/sshd_config.d/00-ssh_server.conf` to natively override default settings.
+* **Execution Script:** Installed to `/usr/local/bin/fetch_authorized_keys.py`.
+* **Authorized Key Cache:** Stored in `/var/cache/sfg/authorized_keys/`.
 
 ## How to Get SSH Access
 
 1. Ensure you have generated an SSH key pair on your personal machine and added the **public key** to your GitHub account.
-
     * [Adding a new SSH key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
-2. Contact an admin with your GitHub username and which machines you would like to have access to. 
+2. Contact an admin with your GitHub username and which machines you would like to have access to.
 
 Once approved by the admin, the hardware will automatically pull your public keys from `https://github.com/<username>.keys` the next time you attempt to log in.
