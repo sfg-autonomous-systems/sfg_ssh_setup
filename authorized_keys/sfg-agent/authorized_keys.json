@@ -7,6 +7,10 @@
     {
       "name": "JakobHaeringer",
       "authorized_for": ".*"
+    },
+    {
+      "name": "twakain",
+      "authorized_for": "sfg-go2-01"
     }
   ]
 }
