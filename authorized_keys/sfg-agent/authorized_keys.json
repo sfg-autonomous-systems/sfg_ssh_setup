@@ -11,6 +11,10 @@
     {
       "name": "twakain",
       "authorized_for": "sfg-go2-01"
+    },
+    {
+      "name": "GeSteine",
+      "authorized_for": "sfg-copilot-01"
     }
   ]
 }
