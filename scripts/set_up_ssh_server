@@ -19,7 +19,6 @@ sfg_ssh_setup__set_up_ssh_server() {
     local authorized_keys_dir="/var/cache/sfg/authorized_keys"
     local authorized_keys_command_filepath="/usr/local/bin/sfg_fetch_authorized_keys"
     local authorized_keys_command_user="nobody"
-    local selinux_module_name="sfg_ssh_server"
 
     # Install the sshd config.
     # shellcheck disable=SC2016
@@ -39,16 +38,8 @@ sfg_ssh_setup__set_up_ssh_server() {
     chmod 755 "${authorized_keys_command_filepath}"
 
     # Install the SELinux policy module, so sshd may run the AuthorizedKeysCommand.
-    # semodule derives the module name from the filename, so install it under the module name.
     if command -v selinuxenabled &>"/dev/null" && selinuxenabled; then
-        local selinux_tmp_dir
-        selinux_tmp_dir="$(mktemp -d)"
-        cp "${SCRIPT_DIR}/../config/ssh_server_selinux.cil" "${selinux_tmp_dir}/${selinux_module_name}.cil"
-        semodule -i "${selinux_tmp_dir}/${selinux_module_name}.cil"
-        rm -rf "${selinux_tmp_dir}"
-
-        # Apply the labels to the files created before the module was installed.
-        restorecon -R "${authorized_keys_dir}" "${authorized_keys_command_filepath}"
+        semodule -i "${SCRIPT_DIR}/../config/sfg_ssh_server.cil"
     fi
 
     # The sshd unit is called "ssh" on Ubuntu/Debian and "sshd" on Fedora/Bazzite.
