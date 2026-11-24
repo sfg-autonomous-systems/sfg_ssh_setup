@@ -1,0 +1,7 @@
+; SELinux policy module for the SFG SSH server setup.
+;
+; semodule derives the module name from the filename, so do not rename this file.
+
+; Allow the AuthorizedKeysCommand to write to the /var directory and its subdirectories.
+(allow sshd_session_t var_t (dir (getattr search open read write add_name create)))
+(allow sshd_session_t var_t (file (getattr open read write create)))
