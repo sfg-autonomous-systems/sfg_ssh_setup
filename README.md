@@ -17,8 +17,9 @@ sudo ./setup
 The setup script uses standard Linux file hierarchies to securely install the components:
 
 * **Configurations:** Installed to `/etc/ssh/ssh_config.d/00-sfg_ssh_client.conf` and `/etc/ssh/sshd_config.d/00-sfg_ssh_server.conf`.
-* **Authorization Script:** Installed to `/usr/local/bin/sfg_fetch_authorized_keys.py`.
+* **Authorization Script:** Installed to `/usr/local/bin/sfg_fetch_authorized_keys`.
 * **Authorized Keys Cache:** Stored in `/var/cache/sfg/authorized_keys/`.
+* **SELinux Policy Module:** On hosts with SELinux enabled, installed as module `sfg_ssh_server`.
 
 ## How to Get SSH Access
 
