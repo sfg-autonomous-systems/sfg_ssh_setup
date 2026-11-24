@@ -9,6 +9,12 @@ sfg_ssh_setup__set_up_ssh_server() {
     local END_TEXT="< Done setting up SSH server."
 
     sfg_bash_utils__print_info "${START_TEXT}"
+
+    if ! command -v sshd &>"/dev/null"; then
+        sfg_bash_utils__print_error "sshd is not installed. Please install OpenSSH server first."
+        return 1
+    fi
+
     local conf_filepath="/etc/ssh/sshd_config.d/00-sfg_ssh_server.conf"
     local authorized_keys_dir="/var/cache/sfg/authorized_keys"
 
@@ -32,10 +38,22 @@ sfg_ssh_setup__set_up_ssh_server() {
     chown root:root "${authorized_keys_command_filepath}"
     chmod 755 "${authorized_keys_command_filepath}"
 
-    if systemctl is-active --quiet ssh; then
-        systemctl restart ssh
-    elif systemctl is-active --quiet sshd; then
-        systemctl restart sshd
+    # The sshd unit is called "ssh" on Ubuntu/Debian and "sshd" on Fedora/Bazzite.
+    local ssh_unit="sshd"
+    if systemctl cat ssh.service &>"/dev/null"; then
+        ssh_unit="ssh"
+    fi
+
+    # Depending on OS and configuration, sshd is started via socket activation or a classic service.
+    if systemctl is-enabled --quiet "${ssh_unit}.socket" 2>"/dev/null"; then
+        # Socket Activation: The socket starts sshd on the first connection,
+        # so only restart sshd if it is already running with the old config.
+        systemctl enable --now "${ssh_unit}.socket"
+        systemctl try-restart "${ssh_unit}.service"
+    else
+        # Classic Service: Enable it at boot and (re)start it to apply the new config.
+        systemctl enable "${ssh_unit}.service"
+        systemctl restart "${ssh_unit}.service"
     fi
 
     sfg_bash_utils__print_info "${END_TEXT}"

@@ -9,6 +9,12 @@ sfg_ssh_setup__set_up_ssh_client() {
     local END_TEXT="< Done setting up SSH client."
 
     sfg_bash_utils__print_info "${START_TEXT}"
+
+    if ! command -v ssh &>"/dev/null"; then
+        sfg_bash_utils__print_error "ssh is not installed. Please install OpenSSH client first."
+        return 1
+    fi
+
     local conf_filepath="/etc/ssh/ssh_config.d/00-sfg_ssh_client.conf"
 
     # Install the ssh config.
