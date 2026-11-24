@@ -20,7 +20,7 @@ sfg_ssh_setup__set_up_ssh_server() {
 
     local authorized_keys_command_filepath="/usr/local/bin/sfg_fetch_authorized_keys.py"
     local authorized_keys_command_user="nobody"
-    
+
     # Install the sshd config.
     # shellcheck disable=SC2016
     mkdir -p "$(dirname "${conf_filepath}")"
