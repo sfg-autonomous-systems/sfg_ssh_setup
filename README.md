@@ -9,7 +9,7 @@ Instead of manually copying SSH keys to individual robots and workstations, this
 To configure a machine to use this centralized SSH setup, clone this repository onto the target machine and run the setup script.
 
 ```bash
-git clone https://github.com/sfg-autonomous-systems/sfg_ssh_setup
+git clone --recurse-submodules https://github.com/sfg-autonomous-systems/sfg_ssh_setup
 cd sfg_ssh_setup
 sudo ./setup
 ```
